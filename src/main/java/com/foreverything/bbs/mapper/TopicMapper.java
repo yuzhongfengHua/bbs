@@ -1,7 +1,7 @@
 package com.foreverything.bbs.mapper;
 
+import com.foreverything.bbs.entities.Replay;
 import com.foreverything.bbs.entities.Topic;
-import javafx.scene.layout.TilePane;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public interface TopicMapper {
     @Update("update topic set t_title=#{topic.title},t_content=#{topic.content} where t_id=#{topic.id}")
     public int updateTopic(@Param("topic")Topic topic);
 
-    @Update("update topic set t_is_marrow=true where t_id=#{topic.id}")
+    @Update("update topic set t_is_marrow=true where t_id=#{id}")
     public int marrowTopicByID(@Param("id")Long id);
 
     @Update("update topic set t_is_top=true where t_id=#{id}")
@@ -60,5 +60,9 @@ public interface TopicMapper {
     @Update("update topic set t_is_delete=true where t_id=#{id}")
     public int deleteTopicByID(@Param("id")Long id);
 
+    @Update("update topic set t_is_marrow=false where t_id=#{id}")
+    public int cancelMarrowTopicByID(@Param("id")Long id);
 
+    @Update("update topic set t_is_up=false where t_id=#{id}")
+    public int cancelUpTopicByID(@Param("id")Long id);
 }

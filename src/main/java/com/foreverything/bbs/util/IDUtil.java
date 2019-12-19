@@ -1,6 +1,10 @@
 package com.foreverything.bbs.util;
 
+import com.foreverything.bbs.mapper.ArticleMapper;
+import com.foreverything.bbs.mapper.ReplayMapper;
+import com.foreverything.bbs.mapper.RewardMapper;
 import com.foreverything.bbs.mapper.TopicMapper;
+import com.foreverything.bbs.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +25,27 @@ public class IDUtil {
 
     private static IDUtil idUtil;
 
+
+    private static List<Long> rewardIDList=new ArrayList<>();
     private static List<Long> topicIDList=new ArrayList<>();
+    private static List<Long> replayIDList=new ArrayList<>();
+    private static List<Integer> userIDList=new ArrayList<>();
+    private static List<Long>  articleIDList=new ArrayList<>();
 
     @Autowired
     TopicMapper topicMapper;
 
+    @Autowired
+    RewardMapper rewardMapper;
 
+    @Autowired
+    ReplayMapper replayMapper;
+
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    ArticleMapper articleMapper;
 
     @PostConstruct
     public void init(){
@@ -41,8 +60,16 @@ public class IDUtil {
          */
         idUtil=this;
         idUtil.topicMapper=this.topicMapper; //装配Mapper后给储存topicID的List赋值
+        idUtil.rewardMapper=this.rewardMapper;
+        idUtil.replayMapper=this.replayMapper;
+        idUtil.userMapper=this.userMapper;
+        idUtil.articleMapper=this.articleMapper;
 
+        userIDList=userMapper.getUserIdCollection();
+        replayIDList=replayMapper.getReplayIDList();
         topicIDList=topicMapper.getTopicIdCollection();
+        rewardIDList=rewardMapper.getRewardIdCollection();
+        articleIDList=articleMapper.getArticleIdCollection();
     }
 
     public static Long initID(){
@@ -54,8 +81,12 @@ public class IDUtil {
          *
          * @Desccription: 生成不重复的12位ID
          */
+
         Long id;
-        while(topicIDList.contains((id=randomALongID()))){
+        id=randomALongID();
+
+        while(topicIDList.contains(id)||replayIDList.contains(id)||rewardIDList.contains(id)||articleIDList.contains(id)){
+
             id=randomALongID();
         }
         return id;
@@ -78,7 +109,41 @@ public class IDUtil {
         return id;
     }
 
+    private static int randomIntegerID(){
+        /**
+         * @Author:CeaserBorgia
+         * @Date:19:46 2019/12/18
+         * @param:
+         *  * @param
+         *
+         * @Desccription:
+         */
 
+        Random random=new Random();
+        int id=Math.abs(random.nextInt())%(1000000);
+        if(id<100000){
+            id+=100000;
+        }
+        return id;
+    }
+
+    public static int initUserID(){
+        /**
+         * @Author:CeaserBorgia
+         * @Date:19:50 2019/12/18
+         * @param:
+         *  * @param
+         *
+         * @Desccription: 生成6位userID
+         */
+
+        int id;
+        id=randomIntegerID();
+        while (userIDList.contains(id)){
+            id=randomIntegerID();
+        }
+        return id;
+    }
 
 }
 
